@@ -7,12 +7,12 @@ node {
         checkout scm
     }
 
-    stage('Build image') {
+    stage('Build docker image') {
   
-       app = docker.build("devtraining/test")
+       app = docker.build("devtraining/dani-dev")
     }
 
-    stage('Test image') {
+    stage('Test docker image') {
   
 
         app.inside {
@@ -20,7 +20,7 @@ node {
         }
     }
 
-    stage('Push image') {
+    stage('Push docker image') {
         
         docker.withRegistry('https://registry.hub.docker.com', 'Docker_Hub') {
             app.push("${env.BUILD_NUMBER}")
@@ -29,6 +29,6 @@ node {
     
     stage('Trigger ManifestUpdate') {
                 echo "triggering updatemanifestjob"
-                build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
+                build job: 'updatemanifest-dani-dev', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
         }
 }
